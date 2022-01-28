@@ -27,6 +27,7 @@ app.use(fileUpload());
         const database = client.db("top-10-travels");
         const blogs = database.collection("blogCollections");
         const users = database.collection("userCollections");
+        const topPlace = database.collection("placeCollections");
 
         //<------------ Get All Blogs ------------->
 
@@ -118,6 +119,14 @@ app.use(fileUpload());
     console.log(remove);
     res.json("remove")
   });
+
+  //<------------ Get Top Places ------------->
+
+  app.get('/topPlace',async(req,res)=>{
+    const getPlace=await topPlace.find({}).toArray();
+    res.send(getPlace)
+  }); 
+  
 
       } finally {
         // await client.close();
