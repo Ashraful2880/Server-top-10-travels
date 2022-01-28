@@ -84,14 +84,40 @@ app.use(express.json());
          res.json({admin:isAdmin})
        }); 
 
+ /* //<------------ Post a Blog ------------->
+
+       app.post('/postBlog',async(req,res)=>{
+        const name=req.body.name;
+        const rating=req.body.rating;
+        const comment=req.body.comment;
+        const pic=req.files.profile;
+        const picData=pic.data;
+        const encodedPic=picData.toString('base64');
+        const imageBuffer=Buffer.from(encodedPic,'base64');
+        const newBlog={
+          name,
+          comment,
+          start:rating,
+          url:imageBuffer
+        }
+        const result=await blogs.insertOne(newBlog);
+        res.json("result"); 
+      }) */
+
+ //<------------ Delete a Blog From DB By Admin ------------>
+
+  app.delete('/deleteBlog/:id',async(req,res)=>{
+    const id=req.params.id;
+    const query={_id:ObjectId(id)}
+    const remove=await blogs.deleteOne(query);
+    console.log(remove);
+    res.json("remove")
+  });
 
 
 
 
 
-
-
-       
 
       } finally {
         // await client.close();
