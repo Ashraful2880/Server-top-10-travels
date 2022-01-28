@@ -21,18 +21,19 @@ app.use(express.json());
         await client.connect();
 
         //<------------ Database All Collections ------------->
+
         const database = client.db("top-10-travels");
         const blogs = database.collection("blogCollections");
-  
+        const users = database.collection("userCollections");
 
-        //<------------ Get All Products ------------->
+        //<------------ Get All Blogs ------------->
 
         app.get('/blog',async(req,res)=>{
           const getBlogs=await blogs.find({}).toArray();
           res.send(getBlogs)
         }); 
         
-          //<------------ Find Products Information For Cart ------------->
+          //<------------ Find Blog Details ------------->
 
           app.get('/details/:id',async(req,res)=>{
             const id=req.params.id;
@@ -41,7 +42,56 @@ app.use(express.json());
             res.json(getBlog);          
           });
 
-        //<------------ Get All Blogs ------------->
+        //<--------------- Send register User info to Database----------------->
+
+        app.post('/users', async(req,res)=>{
+          const newUsers=req.body;
+          const result=await users.insertOne(newUsers);
+          res.json(result);
+        });
+
+         //<--------------- Update Google Sign User info to Database----------------->
+
+         app.put('/users', async(req,res)=>{
+          const newUser=req.body;
+          const filter={email:newUser.email}
+          const options={upsert: true};
+          const updateUser={$set:newUser}
+          const result=await users.updateOne(filter,updateUser,options);
+          res.json(result);
+        }); 
+
+        //<--------------- Update Admin Role to Database----------------->
+
+        app.put('/users/admin', async(req,res)=>{
+          const user=req.body;
+          const filter={email:user.email}
+          const updateAdmin={$set:{role:'admin'}}
+          const result=await users.updateOne(filter,updateAdmin);
+          res.json(result);
+        }); 
+
+         //<------------ Get Admin Data From Database ------------->
+
+         app.get('/user/:email',async(req,res)=>{
+          const email=req.params.email;
+          const query={email:email};
+         const getAdmin=await users.findOne(query);
+         let isAdmin=false
+         if(getAdmin?.role === 'admin'){
+           isAdmin=true;
+         }
+         res.json({admin:isAdmin})
+       }); 
+
+
+
+
+
+
+
+
+       
 
       } finally {
         // await client.close();
