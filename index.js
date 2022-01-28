@@ -125,9 +125,29 @@ app.use(fileUpload());
   app.get('/topPlace',async(req,res)=>{
     const getPlace=await topPlace.find({}).toArray();
     res.send(getPlace)
-  }); 
-  
+  });
 
+  // Update Approve Status
+
+  /* app.put("/blogs/:id", async (req, res) => {
+    const id = req.params.id;
+    const updatedData = req.body;
+    const query = { _id: ObjectId(id) };
+    const options = { upsert: true };
+    const updateDoc = {
+      $set: {
+        status: updatedData.status,
+      },
+    };
+    const result = await blogs.updateOne(
+      query,
+      updateDoc,
+      options
+    );
+
+    res.json(result);
+  });
+   */
       } finally {
         // await client.close();
       }
